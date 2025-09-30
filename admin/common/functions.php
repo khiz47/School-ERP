@@ -585,9 +585,6 @@ function delete_user($conn)
 
 /** ========== GET FUNCTIONS ========== **/
 
-
-
-
 function getRecentAdmissions($conn)
 {
     // Use defined constant if available, fallback to 3
