@@ -587,6 +587,7 @@ function delete_user($conn)
 
 
 
+
 function getRecentAdmissions($conn)
 {
     // Use defined constant if available, fallback to 3
