@@ -1,0 +1,912 @@
+:root {
+  /* Brand Colors */
+  --color-primary: #0056b3; /* Blue */
+  --color-secondary: #6c757d; /* Gray */
+  --color-success: #28a745; /* Green */
+  --color-warning: #ffc107; /* Amber */
+  --color-danger: #dc3545; /* Red */
+
+  /* UI Backgrounds */
+  --color-bg: #f8f9fa; /* Light gray background */
+  --color-surface: #ffffff; /* White cards/panels */
+
+  /* Text */
+  --color-text: #212529; /* Almost black */
+  --color-text-muted: #6c757d;
+
+  /* Borders */
+  --color-border: #dee2e6; /* Soft gray borders */
+
+  /* Common values */
+  --radius: 6px;
+  --transition: all 0.3s ease;
+}
+
+/* ===============================
+   Global Reset
+================================= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  overflow-x: hidden;
+}
+body.no-scroll {
+  overflow: hidden;
+}
+
+/* ===============================
+   Layout Helpers
+================================= */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.centered-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: var(--color-bg);
+  padding: 1rem;
+}
+
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+  background: var(--color-bg);
+}
+.text-center {
+  text-align: center;
+}
+.mt-3 {
+  margin-top: 1rem;
+}
+.mb-4 {
+  margin-bottom: 1.5rem;
+}
+
+/* ===============================
+   Buttons
+================================= */
+.btn-primary {
+  background: var(--color-primary);
+  border: none;
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--radius);
+  font-family: inherit;
+  cursor: pointer;
+  transition: var(--transition);
+  width: 100%;
+}
+
+.btn-primary:hover {
+  background: #004494;
+}
+
+.btn-secondary {
+  background: var(--color-secondary);
+  border: none;
+  color: #fff;
+  border-radius: var(--radius);
+  transition: var(--transition);
+}
+.btn-secondary:hover {
+  background: #545b62;
+}
+
+.btn-success {
+  background: var(--color-success);
+  border: none;
+  color: #fff;
+}
+.btn-success:hover {
+  background: #218838;
+}
+
+.btn-danger {
+  background: var(--color-danger);
+  border: none;
+  color: #fff;
+}
+.btn-danger:hover {
+  background: #c82333;
+}
+
+/* ===============================
+   Links
+================================= */
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: var(--transition);
+}
+a:hover {
+  color: #004494;
+  text-decoration: underline;
+}
+
+/* ===============================
+   Login / Registration Page
+================================= */
+
+.loginContainer {
+  width: 100%;
+  max-width: 400px;
+}
+
+.loginbox {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  /* max-width: 400px; */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  width: 100%;
+}
+
+.loginbox h2 {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.form-group label {
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.form-control {
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  padding: 0.6rem 0.75rem;
+  font-size: 0.95rem;
+  transition: var(--transition);
+}
+
+.form-control:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 5px rgba(0, 86, 179, 0.3);
+  outline: none;
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: var(--color-secondary);
+  font-size: 16px;
+  opacity: 0.9rem;
+  z-index: 10;
+  transition: var(--transition);
+}
+
+.toggle-password:hover {
+  opacity: 1;
+  color: var(--color-primary);
+}
+
+.btn-block {
+  display: block;
+  width: 100%;
+}
+
+#loginResponse {
+  font-size: 0.95rem;
+  color: var(--color-danger);
+}
+
+/* Links */
+p a {
+  color: var(--color-primary);
+  font-weight: 500;
+}
+p a:hover {
+  color: #004494;
+  text-decoration: underline;
+}
+
+/* ===============================
+   Alerts
+================================= */
+
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  margin-top: 1rem;
+  font-weight: 500;
+  font-size: 0.95rem;
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.alert.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.alert-success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.alert-error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+@keyframes shakeAlert {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-5px);
+  }
+  40%,
+  80% {
+    transform: translateX(5px);
+  }
+}
+
+.alert-error.show {
+  animation: shakeAlert 0.4s;
+}
+
+/* ===============================
+   Hero Section (Default)
+   Use for dashboard headers, banners, or top sections
+================================= */
+.hero {
+  position: relative;
+  width: 100%;
+  padding: 3rem 1rem; /* top/bottom spacing for content */
+  background: var(--color-bg); /* default light gray background */
+  color: var(--color-text); /* default text color */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hero .hero-title {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.hero .hero-subtitle {
+  font-size: 1.1rem;
+  color: var(--color-text-muted);
+  margin-bottom: 1.5rem;
+}
+
+.hero .hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+/* Optional: subtle card effect for inner content */
+.hero .hero-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* ===============================
+   Cards / Panels
+================================= */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* ===============================
+   Sidebar style
+================================= */
+.sidebar {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  width: 260px;
+  height: calc(100vh - 60px);
+  background: #fff;
+  border-right: 1px solid var(--color-border);
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.05);
+  transform: translateX(0%);
+  transition: transform 0.3s ease-in-out;
+  z-index: 1000;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+}
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+.sidebar.active {
+  transform: translateX(0);
+}
+/* Sidebar items */
+.side-item {
+  padding: 10px;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+  border-radius: 6px;
+  color: var(--color-text-muted);
+}
+.side-item:hover,
+.side-item.active {
+  background: rgba(0, 123, 255, 0.1);
+  color: var(--color-primary);
+  box-shadow: inset 3px 0 0 #007bff;
+}
+
+/* Dropdown menu inside sidebar */
+.sidebar ul ul {
+  margin-left: 10px; /* small indent */
+  margin-top: 5px;
+}
+
+.sidebar ul ul li {
+  margin-bottom: 4px;
+}
+
+/* Make dropdown links look same as side-item */
+.sidebar ul ul .side-item {
+  display: block;
+  padding: 8px 12px;
+  border-radius: 6px;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  transition: background 0.3s, color 0.3s;
+}
+
+.sidebar ul ul .side-item:hover,
+.sidebar ul ul .side-item.active {
+  background: rgba(0, 123, 255, 0.1);
+  color: var(--color-primary);
+  box-shadow: inset 3px 0 0 #007bff;
+}
+
+/* Rotate chevron when dropdown is open */
+.sidebar .side-item[aria-expanded="true"] i.fa-chevron-down {
+  transform: rotate(180deg);
+  transition: transform 0.3s ease;
+}
+
+.sidebar .side-item i.fa-chevron-down {
+  transition: transform 0.3s ease;
+}
+
+/* Mobile toggle button */
+.sidebar-toggle-btn {
+  background: transparent;
+  border: none;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  z-index: 2001;
+}
+.sidebar-toggle-btn:hover,
+.sidebar-toggle-btn:focus,
+.sidebar-toggle-btn:active {
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+.sidebar-toggle-btn .line {
+  background: var(--color-primary);
+  height: 3px;
+  width: 22px;
+  border-radius: 2px;
+  transition: all 0.3s ease-in-out;
+  transform-origin: center;
+}
+
+/* Hamburger → X animation */
+.sidebar-toggle-btn.open .line1 {
+  transform: rotate(45deg) translate(5px, 6px);
+}
+.sidebar-toggle-btn.open .line2 {
+  opacity: 0;
+  transform: translateX(20px);
+}
+.sidebar-toggle-btn.open .line3 {
+  transform: rotate(-45deg) translate(5px, -6px);
+}
+
+#searchResults {
+  position: relative;
+}
+
+#searchResults ul {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1100;
+  padding: 0;
+  margin: 0 0 0 0;
+  list-style: none;
+}
+
+#searchResults ul li {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--color-text-muted);
+  transition: background 0.2s;
+}
+
+#searchResults ul li:hover {
+  background: rgba(0, 123, 255, 0.1);
+  color: var(--color-primary);
+}
+/* ===============================
+   ADMIN  Topbar
+================================= */
+.topbar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 60px;
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  z-index: 2000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+}
+
+.topbar h5 {
+  font-weight: 500;
+  color: var(--color-primary);
+}
+
+/* Avatar */
+.topbar img {
+  border: 2px solid var(--color-primary);
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.4);
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+}
+
+/* Topbar profile image dropdown */
+.topbar-actions .dropdown-menu {
+  min-width: 150px;
+}
+
+.topbar-actions .dropdown-item-text {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  white-space: normal;
+}
+
+/* ===============================
+   Dash Area
+================================= */
+.dash-area {
+  margin-left: 260px;
+  margin-top: 60px; /* leave room for topbar */
+  padding: 20px;
+  background: var(--color-bg);
+  flex: 1;
+  min-height: calc(100vh - 60px);
+  overflow-y: auto; /* ✅ allow scroll when content grows */
+  -webkit-overflow-scrolling: touch; /* ✅ smooth mobile scrolling */
+  /* transition: margin-left 0.3s ease-in-out; */
+}
+
+.sidebar.collapsed ~ .topbar,
+.sidebar.collapsed ~ .dash-area {
+  margin-left: 0;
+}
+
+/* ===============================
+   Dashboard Cards
+================================= */
+
+/* Dashboard Cards */
+.dash-card {
+  background: var(--color-surface, #fff);
+  border-radius: 12px;
+  padding: 1.2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.dash-card h6 {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-muted, #6c757d);
+  margin-bottom: 0.5rem;
+}
+
+.dash-card h4 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--color-primary, #007bff);
+}
+
+.dash-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Quick Actions Button */
+.dashboard-container .btn-primary {
+  border-radius: 8px;
+  padding: 0.4rem 1.2rem;
+  font-size: 0.9rem;
+}
+
+.dash-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.dash-card h6 {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  margin-bottom: 0.5rem;
+}
+.dash-card h3 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--color-primary);
+}
+
+/* 📝 Tables inside cards */
+.dash-card table {
+  background: transparent;
+  color: var(--color-text);
+  width: 100%;
+}
+.dash-card thead th {
+  color: var(--color-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-bottom: 1px solid var(--color-border);
+}
+.dash-card tbody tr:hover {
+  background: rgba(0, 86, 179, 0.05);
+}
+
+.dataTables_paginate .ellipsis {
+  padding: 0 6px;
+  color: var(--color-text-muted);
+}
+.dataTables_scrollHead {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 10px;
+  padding: 0.75rem 1rem;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+.card-header h5 {
+  margin: 0;
+  font-weight: 600;
+  color: var(--color-text);
+}
+#studentsTable {
+  margin-top: 0px !important;
+}
+#studentsTable_filter {
+  margin: 0 !important;
+}
+#studentsTable_length label,
+#studentsTable_filter label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+}
+#studentsTable_length select {
+  border-radius: 6px;
+  padding: 4px 6px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 14px;
+}
+/* #studentsTable_filter input {
+  border-radius: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--color-border);
+  font-size: 14px;
+  width: 200px;
+  max-width: 100%;
+} */
+
+/* 🔍 Search box */
+.dataTables_wrapper .dataTables_filter {
+  margin: 0;
+}
+.dataTables_wrapper .dataTables_filter label {
+  font-weight: 500;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.dataTables_wrapper .dataTables_filter input {
+  border-radius: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 14px;
+  width: 220px;
+  max-width: 100%;
+  transition: var(--transition);
+}
+.dataTables_wrapper .dataTables_filter input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(0, 86, 179, 0.1);
+}
+
+/* 📑 Page length dropdown */
+.dataTables_wrapper .dataTables_length {
+  margin-bottom: 8px;
+}
+
+.dataTables_wrapper .dataTables_length select {
+  border-radius: 6px;
+  padding: 4px 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+/* ⏩ Pagination (rounded, compact) */
+.dataTables_wrapper .dataTables_paginate {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  border: none;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  background: var(--color-surface);
+  color: var(--color-text) !important;
+  transition: var(--transition);
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+  background: var(--color-primary);
+  color: #fff !important;
+}
+/* 📈 Chart Placeholder */
+.dash-card .text-muted {
+  font-style: italic;
+  opacity: 0.7;
+}
+/* Quick Actions: responsive, professional appearance */
+.quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+/* each action button */
+.quick-actions .action-btn {
+  flex: 1 1 200px; /* allow wrapping, base size 200px */
+  min-width: 140px; /* don't get too small on tiny screens */
+  text-align: center;
+  border-radius: 8px;
+  padding: 0.45rem 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* make primary visually stronger */
+.quick-actions .action-btn.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+/* tabs */
+/* Tabs styling */
+.tab-btn {
+  margin-right: 5px;
+  margin-bottom: 5px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.tab-btn.active {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+
+/* Table responsiveness */
+#usersTable th,
+#usersTable td {
+  white-space: nowrap;
+}
+
+/* Filters row styling */
+.user-tabs {
+  flex: 1;
+  min-width: 250px;
+}
+.filters {
+  flex: 1;
+  justify-content: flex-end;
+}
+.filters .form-control {
+  min-width: 180px;
+}
+
+@media (min-width: 992px) {
+  /* on large screens keep buttons together on left */
+  .quick-actions {
+    justify-content: flex-start;
+  }
+}
+
+/* MEDIA QUERY */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .loginbox {
+    padding: 1.5rem;
+  }
+
+  .hero {
+    padding: 2rem 1rem;
+  }
+  .hero .hero-title {
+    font-size: 1.75rem;
+  }
+  .hero .hero-subtitle {
+    font-size: 1rem;
+  }
+  #sidebar {
+    width: 80%;
+    transform: translateX(-100%);
+    opacity: 0;
+    transition: transform 0.35s ease, opacity 0.35s ease;
+  }
+  #sidebar.active {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  .topbar {
+    margin-left: 0;
+  }
+  .dash-area {
+    margin-left: 0;
+  }
+  .sidebar .user-menu {
+    display: none;
+  }
+  .topbar .user-menu-mobile {
+    display: block;
+  }
+  .filters {
+    width: 100%;
+    justify-content: flex-start;
+    margin-top: 10px;
+  }
+  .filters .form-control {
+    flex: 1;
+  }
+}
+@media (max-width: 576px) {
+  .loginbox h2 {
+    font-size: 1.5rem;
+  }
+
+  .form-control {
+    padding: 0.65rem 0.85rem;
+    font-size: 0.9rem;
+  }
+
+  .btn-primary {
+    padding: 0.65rem;
+    font-size: 0.95rem;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .loginbox {
+    padding: 2rem;
+    border-radius: 8px;
+  }
+
+  .dataTables_wrapper .dataTables_paginate {
+    display: flex;
+    flex-wrap: nowrap; /* prevent breaking */
+    overflow-x: auto; /* allow scroll */
+    justify-content: flex-start;
+    padding: 5px 0;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .dataTables_wrapper .dataTables_paginate .paginate_button {
+    flex: 0 0 auto; /* prevent shrinking */
+    margin: 0 2px;
+  }
+
+  /* Reduce search and length controls width */
+  #studentsTable_filter input,
+  #studentsTable_length select {
+    width: 100%;
+    max-width: 150px;
+  }
+  .dataTables_wrapper .dataTables_scrollBody {
+    max-height: 200px !important;
+  }
+  /* Reduce table header height */
+  .card-body {
+    padding: 0.25rem;
+  }
+}

@@ -1,0 +1,10 @@
+RewriteEngine On
+
+# Skip existing files and directories
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Rewrite any request like /a/b/c → /a/b/c.php
+
+RewriteRule ^(.+?)/?$ $1.php [L]
