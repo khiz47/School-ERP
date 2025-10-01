@@ -296,25 +296,40 @@ function loadUsersPage() {
       );
     });
 }
-
 function loadTeachersPage() {
-  // show temporary loader
   $(".dash-area").html(
-    '<div class="text-center p-5 text-muted">Loading users...</div>'
+    '<div class="text-center p-5 text-muted">Loading Teachers List...</div>'
   );
+  $(".dash-area").load("users/teachers.php", function () {
+    // ✅ Init after teachers.php loads
+    let filters = { branch_id: "", search: "", page: 1 };
+    loadBranchesFilter();
+    loadTeachers(filters);
 
-  // Load the users.php skeleton (includes table + modal HTML)
-  $.get("teachers.php")
-    .done(function (html) {
-      $(".dash-area").html(html);
-      // After skeleton is placed in DOM, fetch users data and render rows
-      fetchTeachers();
-    })
-    .fail(function () {
-      $(".dash-area").html(
-        '<div class="text-center p-5 text-danger">Failed to load Users UI.</div>'
-      );
-    });
+    $("#branchFilter")
+      .off("change")
+      .on("change", function () {
+        filters.branch_id = $(this).val();
+        filters.page = 1;
+        loadTeachers(filters);
+      });
+
+    $("#teacherSearch")
+      .off("keyup")
+      .on("keyup", function () {
+        filters.search = $(this).val();
+        filters.page = 1;
+        loadTeachers(filters);
+      });
+
+    $(document)
+      .off("click", "#teachersPagination a")
+      .on("click", "#teachersPagination a", function (e) {
+        e.preventDefault();
+        filters.page = parseInt($(this).data("page"));
+        loadTeachers(filters);
+      });
+  });
 }
 
 /* =====================================================
@@ -730,8 +745,125 @@ function loadUsers(filters = {}) {
     "json"
   );
 }
-// admin-users-edit.js — include after jQuery is loaded
 
+function loadTeachers(filters = {}) {
+  //show loader
+  $("#teachersTable tbody").html(
+    `<tr><td colspan="10" class="text-center text-muted">Loading...</td></tr>`
+  );
+  $.post(
+    "common/functions.php",
+    {
+      action: "get_teachers",
+      branch_id: filters.branch_id || "",
+      search: filters.search || "",
+      page: filters.page || 1,
+    },
+    function (res) {
+      if (res.status === "success") {
+        let rows = "";
+        if (res.data.users.length === 0) {
+          rows = `<tr><td colspan="10" class="text-center text-muted">No teachers found</td></tr>`;
+        } else {
+          let startNo = (res.data.currentPage - 1) * 10;
+          res.data.users.forEach((user, index) => {
+            let serialNo = startNo + index + 1;
+            let statusText = user.status ? user.status : "active";
+            let classBadges = user.class_name
+              ? user.class_name
+                  .split(",")
+                  .map(
+                    (c) =>
+                      `<span class="badge badge-info mr-1">${c.trim()}</span>`
+                  )
+                  .join(" ")
+              : "-";
+
+            let sectionBadges = user.section_name
+              ? user.section_name
+                  .split(",")
+                  .map(
+                    (s) =>
+                      `<span class="badge badge-secondary mr-1">${s.trim()}</span>`
+                  )
+                  .join(" ")
+              : "-";
+
+            let subjectBadges = user.subjects
+              ? user.subjects
+                  .split(",")
+                  .map(
+                    (sub) =>
+                      `<span class="badge badge-primary mr-1">${sub.trim()}</span>`
+                  )
+                  .join(" ")
+              : "-";
+            rows += `
+                    <tr>
+                        <td>${serialNo}</td>
+                        <td>${user.fullname || "-"}</td>
+                        <td>${user.email || "-"}</td>
+                        <td>${user.phone || "-"}</td>
+                        <td>${user.branch_name || "-"}</td>
+                        <td>${classBadges}</td>
+                        <td>${sectionBadges}</td>
+                        <td>${subjectBadges}</td>
+                        <td>${
+                          statusText.charAt(0).toUpperCase() +
+                          statusText.slice(1)
+                        }</td>
+                        <td>
+                        <button class="btn btn-sm btn-secondary edit-user" data-id="${
+                          user.user_id
+                        }" data-page="users/edit">Edit</button>
+                        <button class="btn btn-sm btn-danger delete-user" data-id="${
+                          user.user_id
+                        }" data-page="users/delete">Delete</button>
+                        </td>
+                        </tr>
+                        `;
+          });
+        }
+        $("#teachersTable tbody").html(rows);
+
+        // Pagination
+        let pag = "";
+        const total = res.data.totalPages;
+        const page = res.data.currentPage;
+        if (total > 1) {
+          if (page > 1)
+            pag += `<li class="page-item"><a class="page-link" href="#" data-page="${
+              page - 1
+            }">&laquo;</a></li>`;
+          for (let i = 1; i <= total; i++) {
+            if (i === 1 || i === total || (i >= page - 1 && i <= page + 1)) {
+              pag += `<li class="page-item ${i === page ? "active" : ""}">
+                <a class="page-link" href="#" data-page="${i}">${i}</a>
+              </li>`;
+            } else if (i === 2 && page > 3) {
+              pag += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+            } else if (i === total - 1 && page < total - 2) {
+              pag += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+            }
+          }
+          if (page < total)
+            pag += `<li class="page-item"><a class="page-link" href="#" data-page="${
+              page + 1
+            }">&raquo;</a></li>`;
+        }
+        $("#teachersPagination").html(pag);
+      } else {
+        $("#teachersTable tbody").html(
+          `<tr><td colspan="10" class="text-center text-danger">Error loading users</td></tr>`
+        );
+      }
+    },
+    "json"
+  );
+}
+
+// //////////////////////////////////////////////////////////////////////////////edit user
+// admin-users-edit.js — include after jQuery is loaded
 // Helper to call common/functions.php
 function apiPost(payload, cb) {
   $.post(
@@ -1372,6 +1504,8 @@ function routePage(fullPage) {
     loadDeleteUserPage(params);
   } else if (page === "teachers") {
     loadTeachersPage();
+  } else if (page === "teachers/add") {
+    loadAddUserPage();
   } else {
     $(".dash-area").load(page + ".php", function (status) {
       if (status === "error") {
@@ -1382,6 +1516,12 @@ function routePage(fullPage) {
     });
   }
 }
+$(document).on("click", ".add-teacher-btn", function (e) {
+  e.preventDefault();
+  let page = $(this).data("page");
+  history.pushState({ page: page }, "", "?page=" + encodeURIComponent(page));
+  routePage(page);
+});
 
 /* =====================================================
    7. DOM Ready Initializations

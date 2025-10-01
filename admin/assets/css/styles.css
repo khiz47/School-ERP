@@ -787,7 +787,10 @@ p a:hover {
 #usersTable td {
   white-space: nowrap;
 }
-
+#teachersTable th,
+#teachersTable td {
+  white-space: nowrap;
+}
 /* Filters row styling */
 .user-tabs {
   flex: 1;
