@@ -88,6 +88,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         case 'get_recent_admissions':
             getRecentAdmissions($conn);
             break;
+
+        case 'get_teachers':
+            getTeachers($conn, $_POST);
+            break;
         default:
             sendResponse('error', null, 'Invalid action.');
     }
@@ -529,7 +533,6 @@ function delete_user($conn)
 
 
 
-
 // function delete_user($conn)
 // {
 //     $user_id = $_POST['user_id'] ?? 0;
@@ -584,9 +587,6 @@ function delete_user($conn)
 // }
 
 /** ========== GET FUNCTIONS ========== **/
-
-
-
 
 function getRecentAdmissions($conn)
 {
@@ -1261,4 +1261,99 @@ function update_user($conn)
     } catch (Exception $e) {
         sendResponse('error', null, "Exception: " . $e->getMessage());
     }
+}
+
+function getTeachers($conn, $data)
+{
+    $branch_id = $data['branch_id'] ?? '';
+    $search    = $data['search'] ?? '';
+    $page      = max(1, intval($data['page'] ?? 1));
+    $limit     = 10;
+    $offset    = ($page - 1) * $limit;
+
+    $where = "u.role_id = 2"; // teachers only
+    $params = [];
+    $types  = "";
+
+    if ($branch_id !== "") {
+        $where .= " AND u.branch_id = ?";
+        $params[] = $branch_id;
+        $types .= "i";
+    }
+
+    if ($search !== "") {
+        $where .= " AND (u.fullname LIKE ? OR u.email LIKE ? OR u.phone LIKE ?)";
+        $searchTerm = "%$search%";
+        $params[] = $searchTerm;
+        $types .= "s";
+        $params[] = $searchTerm;
+        $types .= "s";
+        $params[] = $searchTerm;
+        $types .= "s";
+    }
+
+    $sql = "
+            SELECT 
+                u.user_id, 
+                u.fullname, 
+                u.email, 
+                u.phone, 
+                u.status,
+                b.branch_name,
+                GROUP_CONCAT(DISTINCT c.class_name) AS class_name,
+                GROUP_CONCAT(DISTINCT sec.section_name) AS section_name,
+                GROUP_CONCAT(DISTINCT s.subject_name) AS subjects
+            FROM users u
+            LEFT JOIN branches b ON u.branch_id = b.branch_id
+            LEFT JOIN staff st ON u.user_id = st.user_id AND st.designation = 'teacher'
+            LEFT JOIN teacher_assignments ta ON st.staff_id = ta.staff_id
+            LEFT JOIN classes c ON ta.class_id = c.class_id
+            LEFT JOIN sections sec ON ta.section_id = sec.section_id
+            LEFT JOIN subjects s ON ta.subject_id = s.subject_id
+            WHERE $where
+            GROUP BY u.user_id
+            ORDER BY u.fullname ASC
+            LIMIT 0, 10;
+
+    ";
+
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        sendResponse("error", null, "SQL error: " . $conn->error . " | Query: " . $sql);
+    }
+
+    if ($types) {
+        $stmt->bind_param($types, ...$params);
+    }
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $users = [];
+    while ($row = $result->fetch_assoc()) {
+        $users[] = $row;
+    }
+    $stmt->close();
+
+    // Count for pagination
+    $countSql = "
+        SELECT COUNT(DISTINCT u.user_id) AS total
+        FROM users u
+        WHERE $where
+    ";
+    $stmt = $conn->prepare($countSql);
+    if (!$stmt) {
+        sendResponse("error", null, "Count SQL error: " . $conn->error . " | Query: " . $countSql);
+    }
+    if ($types) $stmt->bind_param($types, ...$params);
+    $stmt->execute();
+    $total = $stmt->get_result()->fetch_assoc()['total'] ?? 0;
+    $stmt->close();
+
+    $response = [
+        "users" => $users,
+        "currentPage" => $page,
+        "totalPages" => ceil($total / $limit),
+    ];
+
+    sendResponse("success", $response, "Teachers fetched successfully");
 }
